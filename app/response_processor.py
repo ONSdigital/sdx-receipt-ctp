@@ -20,7 +20,7 @@ class ResponseProcessor:
             self.tx_id = decrypted_json['tx_id']
             self.logger = self.logger.bind(tx_id=self.tx_id)
 
-        if 'case_ref' in decrypted_json and decrypted_json['case_ref']:
+        if 'ru_ref' in decrypted_json['metadata'] and decrypted_json['metadata']['ru_ref']:
             receipt_ok = self.send_receipt(decrypted_json)
         else:
             self.logger.error("Invalid or missing case_ref")
@@ -43,7 +43,7 @@ class ResponseProcessor:
 
         endpoint = host + "/" + path
 
-        receipt = {'caseRef': decrypted_json['case_ref']}
+        receipt = {'caseRef': decrypted_json['metadata']['ru_ref']}
 
         response = self.remote_call(
             endpoint,
