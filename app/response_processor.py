@@ -1,10 +1,22 @@
 from app import settings
 from app.settings import session
 from json import loads
+import os
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 
 class ResponseProcessor:
+
+    @staticmethod
+    def options():
+        rv = {}
+        try:
+            rv["secret"] = os.getenv("SDX_RECEIPT_CTP_SECRET").encode("ascii")
+        except Exception as e:
+            # No secret in env
+            pass
+        return rv
+
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
