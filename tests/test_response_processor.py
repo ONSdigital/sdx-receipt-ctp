@@ -1,3 +1,4 @@
+import base64
 import logging
 import os
 import unittest
@@ -8,6 +9,7 @@ from tests.test_data import valid_decrypted, invalid_decrypted
 from structlog import wrap_logger
 
 logger = wrap_logger(logging.getLogger(__name__))
+
 
 class TestResponseProcessorSettings(unittest.TestCase):
 
@@ -27,6 +29,40 @@ class TestResponseProcessorSettings(unittest.TestCase):
     def test_no_settings(self):
         rv = ResponseProcessor.options()
         self.assertEqual({}, rv)
+
+
+class DecryptionTests(unittest.TestCase):
+
+    def test_encrypt_bytes_message(self):
+        secret = base64.b64encode(b"x" * 32)
+        message = "Test string".encode("utf-8")
+        rv = ResponseProcessor.encrypt(message, secret=secret)
+        self.assertIsInstance(rv, bytes)
+        self.assertIsInstance(rv.decode("ascii"), str)
+        self.assertIsInstance(base64.urlsafe_b64decode(rv.decode("ascii")), bytes)
+
+    def test_encrypt_string_message(self):
+        secret = base64.b64encode(b"x" * 32)
+        message = "Test string"
+        rv = ResponseProcessor.encrypt(message, secret=secret)
+        self.assertIsInstance(rv, bytes)
+        self.assertIsInstance(rv.decode("ascii"), str)
+        self.assertIsInstance(base64.urlsafe_b64decode(rv.decode("ascii")), bytes)
+
+    def test_roundtrip_bytes_message(self):
+        secret = base64.b64encode(b"x" * 32)
+        message = "Test string"
+        token = ResponseProcessor.encrypt(message.encode("utf-8"), secret=secret)
+        rv = ResponseProcessor.decrypt(token, secret=secret)
+        self.assertEqual(message, rv)
+
+    def test_roundtrip_string_message(self):
+        secret = base64.b64encode(b"x" * 32)
+        message = "Test string"
+        token = ResponseProcessor.encrypt(message, secret=secret)
+        rv = ResponseProcessor.decrypt(token, secret=secret)
+        self.assertEqual(message, rv)
+
 
 class TestResponseProcessor(unittest.TestCase):
 
