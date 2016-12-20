@@ -39,7 +39,7 @@ class ResponseProcessor:
     @staticmethod
     def decrypt(token, secret):
         """
-        Secret key must be 32 url-safe base64-encoded bytes
+        Secret key must be 32 url-safe base64-encoded bytes or string
 
         Returned value is a string.
         """
@@ -47,7 +47,10 @@ class ResponseProcessor:
             f = Fernet(secret)
         except ValueError:
             return None
-        message = f.decrypt(token)
+        try:
+            message = f.decrypt(token)
+        except TypeError:
+            message = f.decrypt(token.encode("utf-8"))
         return message.decode("utf-8")
 
     def __init__(self, logger):
