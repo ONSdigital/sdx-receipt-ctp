@@ -16,9 +16,7 @@ RECEIPT_USER = os.getenv("RECEIPT_USER", "gateway")
 RECEIPT_PASS = os.getenv("RECEIPT_PASS", "ctp")
 
 RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'ctp_receipt')
-RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'ctp_receipt_delay')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
-QUEUE_RETRY_DELAY_IN_MS = 20000
 QUEUE_MAX_MESSAGE_DELIVERIES = 3
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
