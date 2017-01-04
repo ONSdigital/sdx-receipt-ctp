@@ -1,10 +1,58 @@
 from app import settings
 from app.settings import session
 from json import loads
+import os
+
+from cryptography.fernet import Fernet
 from requests.packages.urllib3.exceptions import MaxRetryError
 
 
 class ResponseProcessor:
+
+    @staticmethod
+    def options():
+        rv = {}
+        try:
+            rv["secret"] = os.getenv("SDX_RECEIPT_CTP_SECRET").encode("ascii")
+        except Exception as e:
+            # No secret in env
+            pass
+        return rv
+
+    @staticmethod
+    def encrypt(message, secret):
+        """
+        Message may be a string or bytes.
+        Secret key must be 32 url-safe base64-encoded bytes.
+
+        """
+        try:
+            f = Fernet(secret)
+        except ValueError:
+            return None
+        try:
+            token = f.encrypt(message)
+        except TypeError:
+            token = f.encrypt(message.encode("utf-8"))
+        return token
+
+    @staticmethod
+    def decrypt(token, secret):
+        """
+        Secret key must be 32 url-safe base64-encoded bytes or string
+
+        Returned value is a string.
+        """
+        try:
+            f = Fernet(secret)
+        except ValueError:
+            return None
+        try:
+            message = f.decrypt(token)
+        except TypeError:
+            message = f.decrypt(token.encode("utf-8"))
+        return message.decode("utf-8")
+
     def __init__(self, logger):
         self.logger = logger
         self.tx_id = ""
@@ -13,8 +61,15 @@ class ResponseProcessor:
         else:
             self.skip_receipt = False
 
-    def process(self, decrypted_json):
-        decrypted_json = loads(decrypted_json)
+    def process(self, message, **kwargs):
+        try:
+            secret = kwargs.pop("secret")
+            message = ResponseProcessor.decrypt(message, secret=secret)
+        except KeyError:
+            # No secret defined; message is plaintext
+            pass
+
+        decrypted_json = loads(message)
 
         if 'tx_id' in decrypted_json:
             self.tx_id = decrypted_json['tx_id']
