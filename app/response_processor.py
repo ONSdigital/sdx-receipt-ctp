@@ -14,7 +14,7 @@ class ResponseProcessor:
         rv = {}
         try:
             rv["secret"] = os.getenv("SDX_RECEIPT_CTP_SECRET").encode("ascii")
-        except Exception as e:
+        except Exception:
             # No secret in env
             pass
         return rv
