@@ -90,13 +90,13 @@ class ResponseProcessor:
         if self.skip_receipt:
             self.logger.debug("Skipping sending receipt to CTP")
             return True
-        else:
-            self.logger.debug("Sending receipt to CTP")
 
         host = settings.RECEIPT_HOST
         path = settings.RECEIPT_PATH
 
         endpoint = host + "/" + path
+
+        self.logger.debug("Sending receipt to CTP", endpoint=endpoint, tx_id=decrypted_json['tx_id'])
 
         receipt = {'caseRef': decrypted_json['metadata']['ru_ref']}
 
