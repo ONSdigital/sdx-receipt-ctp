@@ -16,7 +16,12 @@ RECEIPT_USER = os.getenv("RECEIPT_USER", "gateway")
 RECEIPT_PASS = os.getenv("RECEIPT_PASS", "ctp")
 
 RABBIT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RECEIPT_CTP_QUARANTINE_QUEUE', 'ctp_receipt_quarantine')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
+
+SDX_RECEIPT_CTP_SECRET = os.getenv("SDX_RECEIPT_CTP_SECRET")
+if SDX_RECEIPT_CTP_SECRET is not None:
+    SDX_RECEIPT_CTP_SECRET = SDX_RECEIPT_CTP_SECRET.encode("ascii")
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
