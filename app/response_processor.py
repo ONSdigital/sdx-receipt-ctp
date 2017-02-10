@@ -38,7 +38,7 @@ class ResponseProcessor:
         if 'tx_id' not in decrypted:
             raise BadMessageError("Missing tx_id")
         self.tx_id = decrypted['tx_id']
-        self.logger.bind(tx_id=self.tx_id)
+        self.logger = self.logger.bind(tx_id=self.tx_id)
 
         if 'metadata' not in decrypted:
             raise BadMessageError("Missing metadata")
@@ -68,23 +68,27 @@ class ResponseProcessor:
         headers = None
         auth = (settings.RECEIPT_USER, settings.RECEIPT_PASS)
 
+        res_logger = self.logger.bind(request_url=endpoint)
+
         try:
-            self.logger.info("Calling service", request_url=endpoint)
+            self.logger.info("Calling service", request_url=endpoint, tx_id=self.tx_id)
             res = session.post(endpoint, data=data, headers=headers, verify=False, auth=auth)
 
+            res_logger = res_logger.bind(stats_code=res.status_code)
+
             if res.status_code == 400:
-                self.logger.error("Receipt rejected by endpoint", request_url=res.url, status_code=400)
+                res_logger.error("Receipt rejected by endpoint")
                 raise BadMessageError("Failure to send receipt")
 
             elif res.status_code != 200 and res.status_code != 201:
                 # Endpoint may be temporarily down
-                self.logger.error("Bad response from endpoint", request_url=res.url, status_code=res.status_code)
+                res_logger.error("Bad response from endpoint")
                 raise RetryableError("Bad response from endpoint")
 
             else:
-                self.logger.info("Returned from service", request_url=res.url, status_code=res.status_code)
+                res_logger.info("Sent receipt")
                 return
 
         except MaxRetryError:
-            self.logger.error("Max retries exceeded (5) attempting to send to endpoint", request_url=endpoint)
+            res_logger.error("Max retries exceeded (5) attempting to send to endpoint")
             raise RetryableError("Failure to send receipt")
