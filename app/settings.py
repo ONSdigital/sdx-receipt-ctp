@@ -10,16 +10,18 @@ LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_TMP = os.path.join(APP_ROOT, 'tmp')
 
-RECEIPT_HOST = os.getenv("RECEIPT_HOST", "http://localhost:8191")
-RECEIPT_PATH = os.getenv("RECEIPT_PATH", "questionnairereceipts")
-RECEIPT_USER = os.getenv("RECEIPT_USER", "gateway")
-RECEIPT_PASS = os.getenv("RECEIPT_PASS", "ctp")
+RECEIPT_HOST = os.getenv("CTP_RECEIPT_HOST", "http://localhost:8191")
+RECEIPT_PATH = os.getenv("CTP_RECEIPT_PATH", "questionnairereceipts")
+RECEIPT_USER = os.getenv("CTP_RECEIPT_USER", "gateway")
+RECEIPT_PASS = os.getenv("CTP_RECEIPT_PASS", "ctp")
 
-RABBIT_QUEUE = os.getenv('RABBITMQ_QUEUE', 'ctp_receipt')
-RABBIT_DELAY_QUEUE = os.getenv('RABBIT_DELAY_QUEUE', 'ctp_receipt_delay')
+RABBIT_QUEUE = os.getenv('RECEIPT_CTP_QUEUE', 'ctp_receipt')
+RABBIT_QUARANTINE_QUEUE = os.getenv('RECEIPT_CTP_QUARANTINE_QUEUE', 'ctp_receipt_quarantine')
 RABBIT_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'message')
-QUEUE_RETRY_DELAY_IN_MS = 20000
-QUEUE_MAX_MESSAGE_DELIVERIES = 3
+
+SDX_RECEIPT_CTP_SECRET = os.getenv("SDX_RECEIPT_CTP_SECRET")
+if SDX_RECEIPT_CTP_SECRET is not None:
+    SDX_RECEIPT_CTP_SECRET = SDX_RECEIPT_CTP_SECRET.encode("ascii")
 
 RABBIT_URL = 'amqp://{user}:{password}@{hostname}:{port}/{vhost}'.format(
     hostname=os.getenv('RABBITMQ_HOST', 'rabbit'),
