@@ -17,7 +17,7 @@ class ResponseProcessor:
 
         # Decrypt
         try:
-            message = self._decrypt(token=message, secret=settings.SDX_RECEIPT_RRM_SECRET)
+            message = self._decrypt(token=message, secret=settings.SDX_RECEIPT_CTP_SECRET)
         except Exception as e:
             self.logger.error("Exception decrypting message", exception=e)
             raise DecryptError("Failed to decrypt")
