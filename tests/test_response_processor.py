@@ -13,7 +13,7 @@ from structlog import wrap_logger
 
 logger = wrap_logger(logging.getLogger(__name__))
 processor = ResponseProcessor(logger)
-settings.SDX_RECEIPT_RRM_SECRET = test_secret
+settings.SDX_RECEIPT_CTP_SECRET = test_secret
 
 
 def encrypt(plain):
