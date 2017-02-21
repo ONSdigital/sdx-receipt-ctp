@@ -65,7 +65,7 @@ class ResponseProcessor:
         if endpoint == "/":
             raise BadMessageError("Unable to determine delivery endpoint from message")
 
-        headers = None
+        headers = {'content-type': 'application/json'}
         auth = (settings.RECEIPT_USER, settings.RECEIPT_PASS)
 
         res_logger = self.logger.bind(request_url=endpoint)
