@@ -72,7 +72,7 @@ class ResponseProcessor:
 
         try:
             res_logger.info("Calling service")
-            res = session.post(endpoint, data=data, headers=headers, verify=False, auth=auth)
+            res = session.post(endpoint, json=data, headers=headers, verify=False, auth=auth)
 
             res_logger = res_logger.bind(stats_code=res.status_code)
 
