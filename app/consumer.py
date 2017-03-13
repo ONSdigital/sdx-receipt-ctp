@@ -64,8 +64,7 @@ class Consumer(AsyncConsumer):
 
 
 def main():
-    logger.debug("Starting consumer")
-    logger.info("Current version: {}".format(__version__))
+    logger.debug("Starting consumer", version=__version__)
 
     if settings.SDX_RECEIPT_CTP_SECRET is None:
         logger.error("No SDX_RECEIPT_CTP_SECRET env var supplied")
