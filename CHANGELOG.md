@@ -1,4 +1,5 @@
 ### Unreleased
+  - Log version number on startup
   - Add correct content type header to request
   - Align async consumer with Pika docs
 
