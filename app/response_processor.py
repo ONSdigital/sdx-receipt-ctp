@@ -65,14 +65,14 @@ class ResponseProcessor:
         if endpoint == "/":
             raise BadMessageError("Unable to determine delivery endpoint from message")
 
-        headers = None
+        headers = {'content-type': 'application/json'}
         auth = (settings.RECEIPT_USER, settings.RECEIPT_PASS)
 
         res_logger = self.logger.bind(request_url=endpoint)
 
         try:
             res_logger.info("Calling service")
-            res = session.post(endpoint, data=data, headers=headers, verify=False, auth=auth)
+            res = session.post(endpoint, json=data, headers=headers, verify=False, auth=auth)
 
             res_logger = res_logger.bind(stats_code=res.status_code)
 
