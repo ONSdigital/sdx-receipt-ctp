@@ -1,5 +1,8 @@
 ### Unreleased
-  
+
+### 1.1.1 2017-03-22
+  - Remove Rabbit URL from logging messages
+
 ### 1.1.0 2017-03-15
   - Log version number on startup
   - Add correct content type header to request
