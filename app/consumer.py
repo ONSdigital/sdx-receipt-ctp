@@ -1,14 +1,19 @@
 import logging
-from structlog import wrap_logger
-from app import __version__
-from app.async_consumer import AsyncConsumer
-from app.response_processor import ResponseProcessor
-from app import settings
-from app.queue_publisher import QueuePublisher
-from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
 import sys
 
-logging.basicConfig(level=settings.LOGGING_LEVEL, format=settings.LOGGING_FORMAT)
+from structlog import wrap_logger
+from sdx.common.async_consumer import AsyncConsumer
+from sdx.common.logger_config import logger_initial_config
+
+from app import __version__
+from app import settings
+from app.helpers.exceptions import DecryptError, RetryableError, BadMessageError
+from app.response_processor import ResponseProcessor
+from app.queue_publisher import QueuePublisher
+
+logger_initial_config(service_name='sdx-receipt-ctp',
+                      log_level=settings.LOGGING_LEVEL)
+
 logger = wrap_logger(logging.getLogger(__name__))
 
 

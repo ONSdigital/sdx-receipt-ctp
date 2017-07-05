@@ -1,10 +1,12 @@
-from app import settings
-from app.settings import session
 from json import loads
-from app.helpers.exceptions import BadMessageError, RetryableError, DecryptError
+import xml.etree.ElementTree as etree
 
 from cryptography.fernet import Fernet
 from requests.packages.urllib3.exceptions import MaxRetryError
+
+from app import settings
+from app.settings import session
+from app.helpers.exceptions import BadMessageError, RetryableError, DecryptError
 
 
 class ResponseProcessor:
@@ -71,14 +73,36 @@ class ResponseProcessor:
         res_logger = self.logger.bind(request_url=endpoint)
 
         try:
-            res_logger.info("Calling service")
+            res_logger.info("Calling service", service="CTP_RECEIPT_HOST")
             res = session.post(endpoint, json=data, headers=headers, verify=False, auth=auth)
 
-            res_logger = res_logger.bind(stats_code=res.status_code)
+            res_logger = res_logger.bind(status=res.status_code)
 
             if res.status_code == 400:
                 res_logger.error("Receipt rejected by endpoint")
-                raise BadMessageError("Failure to send receipt")
+                raise BadMessageError("Receipt rejected by endpoint")
+
+            elif res.status_code == 404:
+                namespaces = {'error': 'http://ns.ons.gov.uk/namespaces/resources/error'}
+                tree = etree.fromstring(res.content)
+                element = tree.find('error:message', namespaces).text
+                elements = element.split('-')
+
+                if elements[0] == '1009':
+                    stat_unit_id = elements[-1].split('statistical_unit_id: ')[-1].split()[0]
+                    collection_exercise_sid = elements[-1].split('collection_exercise_sid: ')[-1].split()[0]
+
+                    res_logger.error("Receipt rejected by endpoint",
+                                     msg="No records were found on the man_ce_sample_map table",
+                                     error=1009,
+                                     stat_unit_id=stat_unit_id,
+                                     collection_exercise_sid=collection_exercise_sid)
+
+                    raise BadMessageError("Receipt rejected by endpoint")
+
+                else:
+                    res_logger.error("Bad response from endpoint")
+                    raise RetryableError("Bad response from endpoint")
 
             elif res.status_code != 200 and res.status_code != 201:
                 # Endpoint may be temporarily down
