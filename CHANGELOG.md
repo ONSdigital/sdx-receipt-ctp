@@ -7,6 +7,7 @@
   - Add codacy badge
   - Import async_consumer from sdx-common
   - Add support for codecov to see unit test coverage
+  - Update and pin version of sdx-common to 0.7.0
 
 ### 1.1.1 2017-03-22
   - Remove Rabbit URL from logging messages
