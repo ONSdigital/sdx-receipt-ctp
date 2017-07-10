@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 1.2.0 2017-07-10
   - Timestamp all logs as UTC
   - Add common library logging configurator
   - Route receipt 404 errors correctly
