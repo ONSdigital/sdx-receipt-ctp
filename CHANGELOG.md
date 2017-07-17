@@ -1,5 +1,6 @@
 ### Unreleased
   - Change all instances of ADD to COPY in Dockerfile
+  - Remove use of SDX_HOME variable in makefile
 
 ### 1.2.0 2017-07-10
   - Timestamp all logs as UTC
