@@ -1,3 +1,5 @@
+>**DEPRECATED** Please note that this repository is no longer used and will likely be removed at some point in the future. The information in this readme may be out of date or possibly misleading and should not be relied upon.
+
 # sdx-receipt-ctp
 
 [![Build Status](https://travis-ci.org/ONSdigital/sdx-receipt-ctp.svg?branch=develop)](https://travis-ci.org/ONSdigital/sdx-receipt-ctp) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5cfc9ead5af24a7983e4dd203bd81710)](https://www.codacy.com/app/ons-sdc/sdx-receipt-ctp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-receipt-ctp&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/ONSdigital/sdx-receipt-ctp/branch/develop/graph/badge.svg)](https://codecov.io/gh/ONSdigital/sdx-receipt-ctp)
